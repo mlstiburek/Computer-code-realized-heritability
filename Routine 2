@@ -1,0 +1,32 @@
+# This file should be saved as "h2calculator.R"
+
+# User input, see the generic OPTIMIZE function description for details (set reasonably wide limits for the optimization)
+  h2min <- -1 #lower bound of the ($h^2$) for optimization 
+  h2max <- 2 #upper bound of the ($h^2$) for optimization
+  tolerance <- 0.00001 #tolerance value for optimization
+
+# Calculation of parameters (following the Method section)
+  a <- (xa-mu)/sqrt(vp) #($\alpha$) Eq. 1
+  b <- (xb-mu)/sqrt(vp) #($\beta$) Eq. 1
+  p <- pnorm(b)-pnorm(a) #($p$) Eq. 2
+  i <- - (dnorm(b)-dnorm(a))/(pnorm(b)-pnorm(a)) #($i$) Eq. 4 
+  k <- (b*dnorm(b)-a*dnorm(a))/(pnorm(b)-pnorm(a))+((dnorm(b)-dnorm(a))/(pnorm(b)-pnorm(a)))^2 #($k$) Eq. 5
+
+if(likelihood == 1) { #choice based on Table 1
+  P <- p #($P(Y)$)
+  B <- 0.5 #($B$)
+} else {
+  P <- p^2 #($P(Y)$)
+  B <- 1 #($B$)
+}
+
+# The following coding does the optimization of Eq. 10
+
+heritability <- function(h2){
+  right <- (pnorm((b-B*i*h2)/(sqrt(1-0.5*B*k*h2^2)))-pnorm((a-B*i*h2)/(sqrt(1-0.5*B*k*h2^2))))
+  left <- (p*r)/P
+  return(abs(left-right))
+}
+
+solution <- optimize(heritability, c(h2min,h2max), tol=tolerance)
+cat("h2 = ", solution$minimum)
