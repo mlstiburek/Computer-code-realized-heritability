@@ -1,0 +1,11 @@
+# R code to calculate $h^2$ by Eq. 10
+# User input
+ mu <- 0 #($\mu$) mean of P and F1 populations, Eq. 1
+ vp <- 1 #($\sigma^2_p$) phenotypic variance, Eq. 1
+ xa <- 1 #($x_a$) left truncation, Eq. 1
+ xb <- 999999 #($x_b$) right truncation, Eq. 1
+ r <- 0.005 #($r$) r variable, Eq. 8
+ likelihood <- 1 #($1...Y_1 = 1, 2...Y_2 = 2$) likelihood, see Table 1
+
+# Calculate (*$h^2$*)
+  source("h2calculator.r") # calculate heritability based on the above input
