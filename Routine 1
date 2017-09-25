@@ -1,4 +1,4 @@
-# R code to calculate $h^2$ by Eq. 10
+# R code to calculate $h^2$ by Eq. 10, use this to estimate heritability directly based on your input parameters
 # User input
  mu <- 0 #($\mu$) mean of P and F1 populations, Eq. 1
  vp <- 1 #($\sigma^2_p$) phenotypic variance, Eq. 1
