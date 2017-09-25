@@ -21,7 +21,6 @@ if(likelihood == 1) { #choice based on Table 1
 }
 
 # The following coding does the optimization of Eq. 10
-
 heritability <- function(h2){
   right <- (pnorm((b-B*i*h2)/(sqrt(1-0.5*B*k*h2^2)))-pnorm((a-B*i*h2)/(sqrt(1-0.5*B*k*h2^2))))
   left <- (p*r)/P
