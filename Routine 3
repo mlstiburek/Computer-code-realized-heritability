@@ -1,0 +1,77 @@
+# Stochastic simulation model, see "Computer Simulation" chapter within the "Methods" section. Requires Routine 2 as "h2calculator.r" in the working directory.
+
+# User input (simulation parameters)
+  set.seed(1234) #seed for the random number generator
+  it <- 100 #number of iterations
+  N  <- 10000 #population size ($N$)
+  n <- 1000  #sample size ($n$)
+  mu <- 0 #($\mu$)
+  va <- 0.5 #($\sigma^2_a$)
+  ve <- 0.5 #($\sigma^2_e$)
+  xa <- 1 #($x_a$)
+  xb <- 99999999 #($x_b$)
+  likelihood <- 1 #($1...Y_1 = 1, 2...Y_2 = 2$)
+
+# Calculations based on the input
+  vp <- va + ve #($\sigma^2_p$)
+  if(likelihood == 1) {
+    NO1 <- round(N/2)
+    NO2 <- round(N/2+1)
+  } else {
+    NO1 <- N
+    NO2 <- 1  
+  }
+stat <- array(0:0, dim=c(it,2)) #array holding output statistics
+
+for(ai in 1:it){ #loop through independent iterations 
+  # Generate parental values
+  parents <- array(0:0, dim=c(N,3))
+  parents[,1] <- rnorm(N, mean=mu, sd=sqrt(va)) #additive effects
+  parents[,2] <- rnorm(N, mean=0, sd=sqrt(ve)) #environmental effects
+  parents[,3] <- parents[,1] + parents[,2] #phenotypic values
+  
+  # Random mating, generate offspring values
+  offspring <- array(0:0, dim=c(N,5))
+  offspring[,4] <- sample(1:NO1, N, replace = TRUE, prob = NULL) #sample first parent
+  offspring[,5] <- sample(NO2:N, N, replace = TRUE, prob = NULL) #sample second parent
+  for(i in 1:(N)){
+    offspring[i,1] <- (parents[offspring[i,4],1] + parents[offspring[i,5],1])/2 
+    + rnorm(1, mean=0, sd=sqrt(0.5*va)) #additive effects
+  }
+  offspring[,2] <- rnorm(N, mean=0, sd=sqrt(ve)) #environmental effects
+  offspring[,3] <- offspring[,1] + offspring[,2] #phenotypic values
+  
+  # Counter variables 
+  pin <- 0; pout <- 0; count <- 0
+ 
+  # Calculation of the ($r$) parameter
+  while(count < N){ #screening offspring
+    i <- sample.int(N, 1, replace = TRUE)
+    if((offspring[i,3] >= xa) & (offspring[i,3] <= xb)){ #look at phenotypes of parents
+      mom <- offspring[i,4]
+      dad <- offspring[i,5]
+      count <- count + 1
+      if(likelihood == 1) {
+        if(((parents[mom,3] >= xa) & (parents[mom,3] <= xb))) {
+        pin <- pin + 1
+        } else
+        pout <- pout + 1
+        }
+      } else {
+        if(((parents[mom,3] >= xa) & (parents[mom,3] <= xb)) & ((parents[dad,3] >= xa) 
+        & (parents[dad,3] <= xb))) {
+          pin <- pin + 1
+        } else
+        pout <- pout + 1
+        {
+      }
+    }  
+  }
+
+  r <- pin/(pin+pout)
+  
+# Calculation of ($h^2$) (reporting the solution of Eq. 10)
+  source("h2calculator.r")
+  stat[ai,1] <- solution$minimum #save the ($h^2$) estimate
+  stat[ai,2] <- r #save the ($r$) estimate
+}
