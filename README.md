@@ -1,6 +1,4 @@
-# genetics-heritability
-Computer code: Estimating realized heritability in panmictic populations
-
+# Computer code: Estimating realized heritability
 This coding was written by Milan Lstibůrek, Czech University of Life Sciences in Prague, to calculate the narrow-sense heritability using a novel approach presented in:
 
 Lstibůrek M., Bittner V., Hodge G.R., Picek J., & Mackay T.F.C. (2018). Estimating Realized Heritability in Panmictic Populations. Genetics 208(1): 89-95.
